@@ -1,7 +1,7 @@
 /*
  B9Action.swift
 
- Copyright © 2021 BB9z.
+ Copyright © 2021-2022 BB9z.
  https://github.com/b9swift/Action
 
  The MIT License
@@ -11,7 +11,7 @@
 import Foundation
 
 /**
- A simple base component whose main purpose is to provide a unified interface for target/selector patterns and block calls.
+ A simple foundational component, primarily intended to provide a uniform interface for target/selector patterns and block invocations.
  */
 public final class Action {
     /// The object that receives the selector message when the action is triggered.
@@ -57,7 +57,7 @@ public final class Action {
     ///
     /// - Parameter obj: An object sent with the selector message to the target, ignored when the closure is called.
     public func perform(with obj: Any?) {
-        guard isVaild else { return }
+        guard isValid else { return }
         if let selector = selector {
             _ = target?.perform(selector, with: obj)
         }
@@ -69,7 +69,7 @@ public final class Action {
     /// Whether this action is still or not. Execute the perform method with no action if the action is invalid.
     ///
     /// If a reference object is set during initialization, it is valid only when the reference is not released.
-    public var isVaild: Bool {
+    public var isValid: Bool {
         if hasReferenceSet, reference == nil { return false }
         return true
     }
@@ -88,7 +88,7 @@ extension Action {
         if #available(iOS 10.0, *) {
             dispatchPrecondition(condition: .onQueue(.main))
         }
-        guard isVaild else { return }
+        guard isValid else { return }
         if let selector = selector {
             UIApplication.shared.sendAction(selector, to: target, from: sender, for: nil)
         }
@@ -111,7 +111,7 @@ extension Action {
         if #available(macOS 10.12, *) {
             dispatchPrecondition(condition: .onQueue(.main))
         }
-        guard isVaild else { return }
+        guard isValid else { return }
         if let selector = selector {
             NSApp.sendAction(selector, to: target, from: sender)
         }
@@ -125,14 +125,14 @@ extension Action {
 
 extension Action: CustomDebugStringConvertible {
     public var debugDescription: String {
-        let properties: [(String, Any?)] = [("target", target), ("selector", selector), ("block", block), ("reference", reference), ("isVaild", isVaild)]
-        let propertyDiscription = properties.compactMap { key, value in
+        let properties: [(String, Any?)] = [("target", target), ("selector", selector), ("block", block), ("reference", reference), ("isValid", isValid)]
+        let propertyDescription = properties.compactMap { key, value in
             if let value = value {
                 return "\(key) = \(value)"
             }
             return nil
         }.joined(separator: ", ")
-        return "<Action \(Unmanaged.passUnretained(self).toOpaque()): \(propertyDiscription)>"
+        return "<Action \(Unmanaged.passUnretained(self).toOpaque()): \(propertyDescription)>"
     }
 }
 
